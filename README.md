@@ -1,4 +1,4 @@
-# html5-canvas-signature-submit
+# HTML5 canvas signature - Submit to PHP script
 A basic sample of how to draw signature on HTML5 canvas and submit it to PHP script, save the image on a server folder and attach it on email.
 
 ## General description:
