@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Pad</title>
+</head>
+<body>
+    <form id="signatureForm">
+        <canvas id="signaturePad" width="400" height="200" style="border:1px solid #000;"></canvas>
+        <br>
+        <input type="hidden" name="signatureImage" id="signatureImage">
+        <button type="button" onclick="submitSignature()">Submit</button>
+    </form>
+
+    <script>
+        const canvas = document.getElementById('signaturePad');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+
+        canvas.addEventListener('mousedown', () => drawing = true);
+        canvas.addEventListener('mouseup', () => drawing = false);
+        canvas.addEventListener('mousemove', draw);
+
+        function draw(event) {
+            if (!drawing) return;
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#000';
+            ctx.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        }
+
+        function submitSignature() {
+            const signatureImage = canvas.toDataURL('image/png');
+            document.getElementById('signatureImage').value = signatureImage;
+
+            const formData = new FormData(document.getElementById('signatureForm'));
+
+            fetch('submit_signature.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('Signature submitted successfully!');
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
